@@ -1,7 +1,7 @@
 // management setup for plugins and dependencies
 buildscript {
     ext {
-        springBootVersion = '2.1.9.RELEASE'
+        springBootVersion = '2.1.9.RELEASE' // can manage version easily
     }
     repositories {
         mavenCentral()
@@ -13,7 +13,7 @@ buildscript {
 }
 
 // apply plugin
-// do not denote the version of plugins
+// do not denote the version of plugins for the version control
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
@@ -31,8 +31,14 @@ repositories {
 }
 
 // apply dependencies
-// do not denote the version of dependencies
+// do not denote the version of dependencies for the version control
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.projectlombok:lombok')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    annotationProcessor('org.projectlombok:lombok') // to prevent lombok builder error
+    testAnnotationProcessor('org.projectlombok:lombok') // to prevent lombok builder error
 }
