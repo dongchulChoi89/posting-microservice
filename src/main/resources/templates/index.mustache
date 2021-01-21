@@ -1,0 +1,34 @@
+{{>layout/header}}
+
+    <h1>Web Service using Spring Boot</h1>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <a href="/posts/save" role="button" class="btn btn-primary">Post</a>
+            </div>
+        </div>
+        <br>
+        <!-- Posts -->
+        <table class="table table-horizontal table-bordered">
+            <thead class="thead-strong">
+            <tr>
+                <th>No.</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Last modified</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            {{#posts}} <!-- iterate posts list -->
+                <tr>
+                    <td>{{id}}</td> <!-- field in post -->
+                    <td><a href="/posts/update/{{id}}">{{title}}</a></td>
+                    <td>{{author}}</td>
+                    <td>{{modifiedDate}}</td>
+                </tr>
+            {{/posts}}
+            </tbody>
+        </table>
+    </div>
+
+{{>layout/footer}}

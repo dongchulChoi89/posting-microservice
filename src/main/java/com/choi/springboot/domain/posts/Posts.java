@@ -9,7 +9,7 @@ import javax.persistence.*;
 // locate main annotation close to class
 // Basically using Constructor/Builder, input data into DB
 // Entity class never has Setter
-// When need to change, make public method to change the value
+// When need to change, make public method to change the value e.g. update method
 @Getter
 @NoArgsConstructor
 @Entity
