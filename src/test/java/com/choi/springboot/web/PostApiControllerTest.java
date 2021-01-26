@@ -2,6 +2,7 @@ package com.choi.springboot.web;
 
 import com.choi.springboot.domain.posts.Posts;
 import com.choi.springboot.domain.posts.PostsRepository;
+import com.choi.springboot.web.dto.PostsResponseDto;
 import com.choi.springboot.web.dto.PostsSaveRequestDto;
 import com.choi.springboot.web.dto.PostsUpdateRequestDto;
 import org.junit.After;
@@ -21,14 +22,19 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Naming convention:
+// Feature to be tested
+// https://dzone.com/articles/7-popular-unit-test-naming
+// Code convention:
+// Given[ExplainYourInput], When[WhatIsDone], Then[ExpectedResult]
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // when test codes including JPA, use SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // when test codes including JPA, use SpringBootTest // *****
 public class PostApiControllerTest {
     @LocalServerPort
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate; // *****
 
     @Autowired
     private PostsRepository postsRepository;
@@ -39,8 +45,8 @@ public class PostApiControllerTest {
     }
 
     @Test
-    public void Posts_isRegistered() throws Exception {
-        // given
+    public void PostIsRegistered() throws Exception {
+        // Given
         String title = "title";
         String content = "content";
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -51,10 +57,10 @@ public class PostApiControllerTest {
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
-        // when
+        // When
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
 
-        // then
+        // Then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
@@ -64,15 +70,15 @@ public class PostApiControllerTest {
     }
 
     @Test
-    public void Posts_isUpdated() throws Exception {
-        // given
-        Posts savedPosts = postsRepository.save(Posts.builder()
+    public void PostIsUpdated() throws Exception {
+        // Given
+        Posts savedPost = postsRepository.save(Posts.builder()
                             .title("title")
                             .content("content")
                             .author("author")
                             .build());
 
-        Long updateId = savedPosts.getId();
+        Long updateId = savedPost.getId();
         String expectedTitle = "title2";
         String expectedContent = "content2";
 
@@ -84,15 +90,55 @@ public class PostApiControllerTest {
         String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
-        // when
+        // When
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
 
-        // then
+        // Then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
         List<Posts> all = postsRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
         assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+    }
+
+    @Test
+    public void PostIsFoundById() throws Exception {
+        // Given
+        Posts savedPost = postsRepository.save(Posts.builder()
+                            .title("title")
+                            .content("content")
+                            .author("author")
+                            .build());
+
+        Long id = savedPost.getId();
+        String url = "http://localhost:" + port + "/api/v1/posts/" + id;
+
+        // When
+        ResponseEntity<PostsResponseDto> responseEntity = restTemplate.getForEntity(url, PostsResponseDto.class);
+
+        // Then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(new PostsResponseDto(savedPost));
+    }
+
+    @Test
+    public void PostIsDeleted() throws Exception {
+        // Given
+        Posts savedPost = postsRepository.save(Posts.builder()
+                .title("title")
+                .content("content")
+                .author("author")
+                .build());
+
+        Long id = savedPost.getId();
+        String url = "http://localhost:" + port + "/api/v1/posts/" + id;
+
+        // When
+        restTemplate.delete(url);
+        ResponseEntity<PostsResponseDto> responseEntity = restTemplate.getForEntity(url, PostsResponseDto.class);
+
+        // Then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

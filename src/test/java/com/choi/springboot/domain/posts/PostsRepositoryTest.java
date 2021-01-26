@@ -24,8 +24,8 @@ public class PostsRepositoryTest {
     }
 
     @Test
-    public void savePosts_andRead() {
-        // given
+    public void postIsSavedAndRead() {
+        // Given
         String title = "test title";
         String content = "test content";
 
@@ -36,18 +36,18 @@ public class PostsRepositoryTest {
                 .build()
         );
 
-        // when
+        // When
         List<Posts> postsList = postsRepository.findAll();
 
-        // then
+        // Then
         Posts posts = postsList.get(0);
         assertThat(posts.getTitle()).isEqualTo(title);
         assertThat(posts.getContent()).isEqualTo(content);
     }
 
     @Test
-    public void BaseTimeEntity_isRegistered() {
-        // given
+    public void BaseTimeEntityIsRegistered() {
+        // Given
         LocalDateTime now = LocalDateTime.of(2021,1,1,0,0,0);
         postsRepository.save(Posts.builder()
                             .title("title")
@@ -55,10 +55,10 @@ public class PostsRepositoryTest {
                             .author("author")
                             .build());
 
-        // when
+        // When
         List<Posts> postsList = postsRepository.findAll();
 
-        // then
+        // Then
         Posts posts = postsList.get(0);
         System.out.println(">>>>>> createDate=" + posts.getCreatedDate() + ", modifiedDate=" + posts.getModifiedDate());
 

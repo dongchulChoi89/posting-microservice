@@ -21,13 +21,13 @@ public class PostsService {
 
     @Transactional
     public Long save(PostsSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getId();
+        return postsRepository.save(requestDto.toEntity()).getId(); // postsRepository.save()/delete() takes Posts object // postsRepository.CRUD() returns Posts object
     }
 
     @Transactional
-    public Long update(Long id, PostsUpdateRequestDto requestDto) {
+    public Long update(Long id, PostsUpdateRequestDto requestDto) { // ***** // except update(), JpaRepository offers CRD
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is no post. id=" + id));
-        posts.update(requestDto.getTitle(), requestDto.getContent());
+        posts.update(requestDto.getTitle(), requestDto.getContent()); // *****
         return id;
     }
 
