@@ -1,5 +1,6 @@
 package com.choi.springboot.web;
 
+import com.choi.springboot.config.auth.dto.SessionUser;
 import com.choi.springboot.service.posts.PostsService;
 import com.choi.springboot.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -9,14 +10,24 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpSession;
+
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
     private final PostsService postsService;  // use constructor to inject beans using @RequiredArgsConstructor // recommend rather than @Autowired
+    private final HttpSession httpSession;
 
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("posts", postsService.findAllDesc()); // save the list of the posts of the result of the findAllDesc() into model and send it to index.mustache
+
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
+        }
+
+
         return "index"; // Mustache autmatically access src/main/resources/templates and add .mustache on the file, and return index.html
     }
 

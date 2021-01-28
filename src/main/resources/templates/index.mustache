@@ -5,6 +5,13 @@
         <div class="row">
             <div class="col-md-6">
                 <a href="/posts/save" role="button" class="btn btn-primary">Post</a>
+                {{#userName}} <!-- if there is userName -->
+                    Logged in as: <span id="user">{{userName}}</span>
+                    <a href="/logout" class="btn btn-info active" role="button">Logout</a> <!-- Spring Security basically offers "/logout" url, don't have to make controller -->
+                {{/userName}}
+                {{^userName}} <!-- if there is no userName -->
+                    <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a> <!-- Spring Security basically offers "/oauth2/authorization/google" url, don't have to make controller -->
+                {{/userName}}
             </div>
         </div>
         <br>
