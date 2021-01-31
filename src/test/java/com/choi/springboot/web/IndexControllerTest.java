@@ -1,6 +1,5 @@
 package com.choi.springboot.web;
 
-import com.choi.springboot.domain.posts.Posts;
 import com.choi.springboot.domain.posts.PostsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,32 +28,4 @@ public class IndexControllerTest {
         // Then
         assertThat(body).contains("Web Service using Spring Boot");
     }
-
-    @Test
-    public void postsSavePageIsLoaded() {
-        // When
-        String body = restTemplate.getForObject("/posts/save", String.class);
-
-        // Then
-        assertThat(body).contains("Post");
-    }
-
-    @Test
-    public void postsUpdatePageIsLoaded() {
-        // Given
-        Posts savedPost = postsRepository.save(Posts.builder()
-                .title("title")
-                .content("content")
-                .author("author")
-                .build());
-
-        Long id = savedPost.getId();
-
-        // When
-        String body = restTemplate.getForObject("/posts/update/" + id, String.class);
-
-        // Then
-        assertThat(body).contains("Update");
-    }
-
 }
