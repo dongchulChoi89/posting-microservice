@@ -1,5 +1,6 @@
 package com.choi.springboot.web;
 
+import com.choi.springboot.config.auth.LoginUser;
 import com.choi.springboot.config.auth.dto.SessionUser;
 import com.choi.springboot.service.posts.PostsService;
 import com.choi.springboot.web.dto.PostsResponseDto;
@@ -19,14 +20,12 @@ public class IndexController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc()); // save the list of the posts of the result of the findAllDesc() into model and send it to index.mustache
 
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
         if(user != null) {
             model.addAttribute("userName", user.getName());
         }
-
 
         return "index"; // Mustache autmatically access src/main/resources/templates and add .mustache on the file, and return index.html
     }
